@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #0a0c10;
+  --color-ink-900: #0e1116;
+  --color-ink-850: #12161d;
+  --color-ink-800: #171c24;
+  --color-ink-700: #1f2530;
+  --color-ink-600: #2a313d;
+  --color-ink-500: #3a4250;
+
+  --color-mist-100: #f2f5f9;
+  --color-mist-200: #dde3ec;
+  --color-mist-300: #c3ccda;
+  --color-mist-400: #a5b0c1;
+  --color-mist-500: #8792a5;
+  --color-mist-600: #6b7688;
+
+  --color-safe-400: #38d39f;
+  --color-safe-500: #17b984;
+  --color-safe-950: #0a2a21;
+
+  --color-watch-400: #f5b544;
+  --color-watch-500: #e39a1c;
+  --color-watch-950: #33260a;
+
+  --color-risk-400: #ff6b6b;
+  --color-risk-500: #ef4444;
+  --color-risk-950: #37151a;
+
+  --color-accent-400: #7aa2ff;
+  --color-accent-500: #4f7dfb;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: var(--color-mist-100);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Numbers should line up in tables and metric rows. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent-500) 40%, transparent);
+}
+
+/* Recharts injects its own focus outline on the surface; suppress only that. */
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
