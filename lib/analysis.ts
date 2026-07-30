@@ -199,15 +199,26 @@ export function analyzeWorker(workerId: string): WorkerAnalysis | undefined {
   };
 }
 
-/** Small list for the worker selector; the raw ledger never leaves the server. */
+/**
+ * Small list for the demo profile switcher. The forecast status comes from the
+ * ranking pass, which already runs a forecast for every worker, so previewing
+ * each outcome costs nothing extra. The raw ledger never leaves the server.
+ */
 export function workerOptions(): WorkerOption[] {
   const dataset = loadDataset();
-  return dataset.workers.map((worker) => ({
-    id: worker.id,
-    occupation: worker.occupation,
-    payType: worker.payType,
-    city: worker.city,
-  }));
+  const ranked = new Map(rankWorkers().map((entry) => [entry.id, entry]));
+  return dataset.workers.map((worker) => {
+    const rank = ranked.get(worker.id);
+    return {
+      id: worker.id,
+      occupation: worker.occupation,
+      payType: worker.payType,
+      city: worker.city,
+      status: rank?.status,
+      safeDays: rank?.safeDays,
+      survivesWindow: rank?.survivesWindow,
+    };
+  });
 }
 
 export function resolveWorkerId(requested?: string): string | undefined {

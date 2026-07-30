@@ -80,8 +80,15 @@ export function WhatIfSimulator({
       <div className="grid gap-6 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
         <div className="space-y-4">
           {/* Extra shift */}
-          <div className="rounded-xl border border-ink-700/70 bg-ink-850/60 p-3.5">
-            <label className="flex items-start justify-between gap-3">
+          <div
+            className={cn(
+              "rounded-xl border p-3.5 transition-colors",
+              extraShift
+                ? "border-accent-500/40 bg-accent-500/5"
+                : "border-ink-700/70 bg-ink-850/60",
+            )}
+          >
+            <label className="flex cursor-pointer items-start justify-between gap-3">
               <span className="min-w-0">
                 <span className="flex items-center gap-1.5 text-sm font-medium text-mist-100">
                   <Sun className="h-4 w-4 text-watch-400" aria-hidden="true" />
@@ -95,8 +102,22 @@ export function WhatIfSimulator({
                 type="checkbox"
                 checked={extraShift}
                 onChange={(event) => setExtraShift(event.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 accent-[#4f7dfb]"
+                className="peer sr-only"
               />
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "mt-0.5 flex h-5 w-9 shrink-0 items-center rounded-full p-0.5 transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent-400",
+                  extraShift ? "bg-accent-500" : "bg-ink-600",
+                )}
+              >
+                <span
+                  className={cn(
+                    "h-4 w-4 rounded-full bg-white shadow transition-transform",
+                    extraShift ? "translate-x-4" : "translate-x-0",
+                  )}
+                />
+              </span>
             </label>
             {extraShift ? (
               <div className="mt-3">

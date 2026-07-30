@@ -3,11 +3,15 @@ import "server-only";
 import { buildForecastInputs, resolveAnalysisDate } from "./calculations";
 import { loadDataset, type WorkerBundle } from "./data";
 import { runForecast } from "./forecast";
+import type { ForecastStatus } from "./types";
 
 export type RankedWorker = {
   id: string;
   score: number;
   reasons: string[];
+  status: ForecastStatus;
+  safeDays: number;
+  survivesWindow: boolean;
 };
 
 /**
@@ -74,7 +78,14 @@ function scoreWorker(bundle: WorkerBundle, datasetMaxKey?: string): RankedWorker
   const essentialsPerDay = inputs.days[0]?.essentials ?? 0;
   if (essentialsPerDay < 10) score -= 30;
 
-  return { id: bundle.worker.id, score, reasons };
+  return {
+    id: bundle.worker.id,
+    score,
+    reasons,
+    status: forecast.status,
+    safeDays: forecast.safeDays,
+    survivesWindow: forecast.survivesWindow,
+  };
 }
 
 let ranked: RankedWorker[] | undefined;

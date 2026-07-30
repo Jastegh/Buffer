@@ -9,7 +9,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-ink-700/70 bg-ink-900/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset]",
+        "rounded-2xl border border-ink-700/70 bg-ink-900/80 shadow-[var(--shadow-card)]",
         className,
       )}
       {...props}
@@ -77,8 +77,19 @@ export function Metric({
   );
 }
 
-/** Keyboard- and screen-reader-accessible tooltip built on native title + visible popup. */
-export function InfoTip({ label, children }: { label: string; children: React.ReactNode }) {
+/**
+ * Opens on hover and on keyboard focus. Anchored below and right-aligned by
+ * default so it never collides with the sticky header.
+ */
+export function InfoTip({
+  label,
+  children,
+  align = "right",
+}: {
+  label: string;
+  children: React.ReactNode;
+  align?: "right" | "center";
+}) {
   return (
     <span className="group relative inline-flex align-middle">
       <button
@@ -90,7 +101,10 @@ export function InfoTip({ label, children }: { label: string; children: React.Re
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 w-60 -translate-x-1/2 rounded-lg border border-ink-600 bg-ink-800 p-3 text-xs font-normal leading-relaxed text-mist-300 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+        className={cn(
+          "pointer-events-none absolute top-full z-40 mt-2 w-64 rounded-lg border border-ink-600 bg-ink-800 p-3 text-xs font-normal leading-relaxed text-mist-300 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100",
+          align === "right" ? "right-0" : "left-1/2 -translate-x-1/2",
+        )}
       >
         {children}
       </span>

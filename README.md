@@ -166,13 +166,47 @@ payment on Jul 1 that drops the balance to −$329, and recovery to +$112 by Jul
 wage advances and 4 recurring bills on file. Ties break on worker ID, so the selection is
 stable across restarts. The **"Best demo profile"** button returns to it from any other worker.
 
+### Why there is a profile switcher at all
+
+Buffer is a personal app — a real user only ever sees their own numbers, so a worker picker
+is not a product feature. It exists purely so the sample data can be explored, and it is
+labelled accordingly: the control reads **"Demo"**, and opening it leads with a line
+explaining that in real use you would only see your own figures. Each row previews that
+profile's outcome (buffer days and status), and the list can be filtered to the 43 at-risk
+profiles, so switching is an informed choice rather than a lottery.
+
+## Interface
+
+The dashboard is one page but not one long scroll. The safety card and data-quality strip
+stay pinned at the top as the persistent answer, and everything else lives in three tabs:
+
+| Tab | Answers |
+| --- | --- |
+| **Why & when** | the narrative, the balance chart, the day-by-day timeline, committed vs expected |
+| **What to do** | ranked actions and the what-if simulator |
+| **Patterns** | Explain My Money |
+
+Tab panels are rendered on the server and handed to a client component as nodes, so
+switching tabs is instant and no analysis work moves into the browser. Tabs support
+arrow-key/Home/End navigation, and the hero's buttons jump straight to a tab. Once the hero
+scrolls out of view the sticky header carries a condensed "1.6 safe days · At Risk" chip.
+
+**Light mode** is available from the sun/moon button in the header. Both ramps (`ink-*`
+surfaces, `mist-*` foregrounds) are CSS variables consumed through Tailwind's `@theme
+inline`, so components carry no theme conditionals. Dark is the default and light is an
+explicit opt-in — stored in `localStorage` and applied by a pre-paint script so there is no
+colour flash on load. Chart colours, which cannot be Tailwind classes, are resolved per
+theme in `components/theme-provider.tsx`.
+
 ## Architecture
 
 ```
 app/
   page.tsx              server component: loads data, computes analysis, renders the dashboard
   api/copilot/route.ts  optional LLM polish (see below)
-components/             header, safety card, chart, timeline, narrative, simulator, insights
+components/             header, safety card, tabs, chart, timeline, narrative, simulator, insights
+  theme-provider.tsx    light/dark state, pre-paint theme script, chart colour tokens
+  dashboard-tabs.tsx    three-panel shell; panels are server-rendered and passed in as nodes
 lib/
   csv.ts                file reading, header normalization, safe value parsers
   mappings.ts           column aliases, raw rows -> normalized models

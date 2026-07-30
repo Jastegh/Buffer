@@ -1,39 +1,124 @@
 @import "tailwindcss";
 
-@theme {
-  --color-ink-950: #0a0c10;
-  --color-ink-900: #0e1116;
-  --color-ink-850: #12161d;
-  --color-ink-800: #171c24;
-  --color-ink-700: #1f2530;
-  --color-ink-600: #2a313d;
-  --color-ink-500: #3a4250;
+/**
+ * Two colour ramps, both defined as CSS variables so they can be swapped at
+ * runtime for light mode:
+ *
+ *   ink-*   surfaces, from the page canvas (950) up to controls and borders (500)
+ *   mist-*  foreground text, from primary (100) down to faint (600)
+ *
+ * In light mode the ramps invert — ink becomes light, mist becomes dark — so a
+ * component written once works in both themes without conditional classes.
+ * `@theme inline` is what makes the generated utilities read the variable at
+ * use time rather than baking the value in.
+ */
+@theme inline {
+  --color-ink-950: var(--c-ink-950);
+  --color-ink-900: var(--c-ink-900);
+  --color-ink-850: var(--c-ink-850);
+  --color-ink-800: var(--c-ink-800);
+  --color-ink-700: var(--c-ink-700);
+  --color-ink-600: var(--c-ink-600);
+  --color-ink-500: var(--c-ink-500);
 
-  --color-mist-100: #f2f5f9;
-  --color-mist-200: #dde3ec;
-  --color-mist-300: #c3ccda;
-  --color-mist-400: #a5b0c1;
-  --color-mist-500: #8792a5;
-  --color-mist-600: #6b7688;
+  --color-mist-100: var(--c-mist-100);
+  --color-mist-200: var(--c-mist-200);
+  --color-mist-300: var(--c-mist-300);
+  --color-mist-400: var(--c-mist-400);
+  --color-mist-500: var(--c-mist-500);
+  --color-mist-600: var(--c-mist-600);
 
-  --color-safe-400: #38d39f;
-  --color-safe-500: #17b984;
-  --color-safe-950: #0a2a21;
+  --color-safe-400: var(--c-safe-400);
+  --color-safe-500: var(--c-safe-500);
+  --color-safe-950: var(--c-safe-950);
 
-  --color-watch-400: #f5b544;
-  --color-watch-500: #e39a1c;
-  --color-watch-950: #33260a;
+  --color-watch-400: var(--c-watch-400);
+  --color-watch-500: var(--c-watch-500);
+  --color-watch-950: var(--c-watch-950);
 
-  --color-risk-400: #ff6b6b;
-  --color-risk-500: #ef4444;
-  --color-risk-950: #37151a;
+  --color-risk-400: var(--c-risk-400);
+  --color-risk-500: var(--c-risk-500);
+  --color-risk-950: var(--c-risk-950);
 
-  --color-accent-400: #7aa2ff;
-  --color-accent-500: #4f7dfb;
+  --color-accent-400: var(--c-accent-400);
+  --color-accent-500: var(--c-accent-500);
 }
 
-html {
+:root {
   color-scheme: dark;
+
+  /* Height of the sticky header, so the tab bar can stick directly beneath it. */
+  --header-h: 53px;
+
+  --c-ink-950: #0a0c10;
+  --c-ink-900: #0e1116;
+  --c-ink-850: #12161d;
+  --c-ink-800: #171c24;
+  --c-ink-700: #1f2530;
+  --c-ink-600: #2a313d;
+  --c-ink-500: #3a4250;
+
+  --c-mist-100: #f2f5f9;
+  --c-mist-200: #dde3ec;
+  --c-mist-300: #c3ccda;
+  --c-mist-400: #a5b0c1;
+  --c-mist-500: #8792a5;
+  --c-mist-600: #6b7688;
+
+  --c-safe-400: #38d39f;
+  --c-safe-500: #17b984;
+  --c-safe-950: #0a2a21;
+
+  --c-watch-400: #f5b544;
+  --c-watch-500: #e39a1c;
+  --c-watch-950: #33260a;
+
+  --c-risk-400: #ff6b6b;
+  --c-risk-500: #ef4444;
+  --c-risk-950: #37151a;
+
+  --c-accent-400: #7aa2ff;
+  --c-accent-500: #4f7dfb;
+
+  --shadow-card: 0 1px 0 0 rgb(255 255 255 / 0.03) inset;
+}
+
+/* Light mode: warmer, paper-like surfaces with darkened status colours so the
+   green/amber/red still meet contrast on white. */
+.light {
+  color-scheme: light;
+
+  --c-ink-950: #eef1f6;
+  --c-ink-900: #ffffff;
+  --c-ink-850: #f7f9fc;
+  --c-ink-800: #eff3f8;
+  --c-ink-700: #dde4ed;
+  --c-ink-600: #c6d0dd;
+  --c-ink-500: #a6b2c2;
+
+  --c-mist-100: #0d1520;
+  --c-mist-200: #1b2634;
+  --c-mist-300: #33414f;
+  --c-mist-400: #4c5a6b;
+  --c-mist-500: #5f6d7e;
+  --c-mist-600: #77849a;
+
+  --c-safe-400: #08805a;
+  --c-safe-500: #0b9c6d;
+  --c-safe-950: #e3f7ef;
+
+  --c-watch-400: #94620a;
+  --c-watch-500: #c98a13;
+  --c-watch-950: #fdf3de;
+
+  --c-risk-400: #c92a2a;
+  --c-risk-500: #e03131;
+  --c-risk-950: #fdecec;
+
+  --c-accent-400: #2255d6;
+  --c-accent-500: #3b6ff0;
+
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04);
 }
 
 body {
@@ -55,13 +140,29 @@ body {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--color-accent-500) 40%, transparent);
+  background: color-mix(in oklab, var(--color-accent-500) 35%, transparent);
 }
 
 /* Recharts injects its own focus outline on the surface; suppress only that. */
 .recharts-wrapper:focus,
 .recharts-surface:focus {
   outline: none;
+}
+
+/* Small fade so switching tabs reads as a change of view, not a page reload. */
+@keyframes buffer-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-in {
+  animation: buffer-fade-in 180ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {

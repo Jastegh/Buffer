@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import type { DailyForecast } from "@/lib/types";
 import { formatCurrency, formatShortDate, formatTinyDate } from "@/lib/formatters";
-import { STATUS_META } from "@/lib/utils";
+import { useChartColors } from "./theme-provider";
 
 type ChartPoint = {
   date: string;
@@ -38,6 +38,7 @@ export function ForecastChart({
   anchorDate: string;
   scenarioDays?: DailyForecast[];
 }) {
+  const colors = useChartColors();
   const data: ChartPoint[] = [
     { date: anchorDate, balance: startingBalance, scenario: scenarioDays ? startingBalance : undefined },
     ...days.map((day, index) => ({
@@ -69,49 +70,49 @@ export function ForecastChart({
           <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="balanceFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset={0} stopColor="#4f7dfb" stopOpacity={0.35} />
-                <stop offset={floorOffset} stopColor="#4f7dfb" stopOpacity={0.04} />
-                <stop offset={floorOffset} stopColor="#ef4444" stopOpacity={0.28} />
-                <stop offset={1} stopColor="#ef4444" stopOpacity={0.14} />
+                <stop offset={0} stopColor={colors.lineFill} stopOpacity={0.35} />
+                <stop offset={floorOffset} stopColor={colors.lineFill} stopOpacity={0.04} />
+                <stop offset={floorOffset} stopColor={colors.riskFill} stopOpacity={0.28} />
+                <stop offset={1} stopColor={colors.riskFill} stopOpacity={0.14} />
               </linearGradient>
               <linearGradient id="balanceStroke" x1="0" y1="0" x2="0" y2="1">
-                <stop offset={floorOffset} stopColor="#7aa2ff" />
-                <stop offset={floorOffset} stopColor="#ff6b6b" />
+                <stop offset={floorOffset} stopColor={colors.line} />
+                <stop offset={floorOffset} stopColor={colors.risk} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="#1f2530" strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid stroke={colors.grid} strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="date"
               tickFormatter={(value: string) => formatTinyDate(value)}
-              stroke="#3a4250"
-              tick={{ fill: "#6b7688", fontSize: 11 }}
+              stroke={colors.axis}
+              tick={{ fill: colors.axis, fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: "#1f2530" }}
+              axisLine={{ stroke: colors.axisLine }}
               minTickGap={8}
             />
             <YAxis
               domain={[min - pad, max + pad]}
               tickFormatter={(value: number) => formatCurrency(value)}
-              stroke="#3a4250"
-              tick={{ fill: "#6b7688", fontSize: 11 }}
+              stroke={colors.axis}
+              tick={{ fill: colors.axis, fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               width={64}
             />
             <ReferenceLine
               y={safetyFloor}
-              stroke={hasBreach ? STATUS_META["at-risk"].hex : "#3a4250"}
+              stroke={hasBreach ? colors.risk : colors.floor}
               strokeDasharray="5 4"
               strokeWidth={1.5}
               label={{
                 value: `Safety floor ${formatCurrency(safetyFloor)}`,
                 position: "insideBottomLeft",
-                fill: hasBreach ? STATUS_META["at-risk"].hex : "#6b7688",
+                fill: hasBreach ? colors.risk : colors.axis,
                 fontSize: 11,
               }}
             />
             <Tooltip
-              cursor={{ stroke: "#3a4250", strokeWidth: 1 }}
+              cursor={{ stroke: colors.axis, strokeWidth: 1 }}
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
                 const balance = payload.find((p) => p.dataKey === "balance")?.value as number;
@@ -140,7 +141,7 @@ export function ForecastChart({
             <Area
               type="monotone"
               dataKey="balance"
-              stroke={hasBreach ? "url(#balanceStroke)" : "#7aa2ff"}
+              stroke={hasBreach ? "url(#balanceStroke)" : colors.line}
               strokeWidth={2.5}
               fill="url(#balanceFill)"
               dot={(props) => {
@@ -157,8 +158,8 @@ export function ForecastChart({
                     cx={cx}
                     cy={cy}
                     r={3}
-                    fill="#0e1116"
-                    stroke={below ? "#ff6b6b" : "#7aa2ff"}
+                    fill={colors.dotCore}
+                    stroke={below ? colors.risk : colors.line}
                     strokeWidth={2}
                   />
                 );
@@ -171,7 +172,7 @@ export function ForecastChart({
               <Line
                 type="monotone"
                 dataKey="scenario"
-                stroke={STATUS_META.safe.hex}
+                stroke={colors.scenario}
                 strokeWidth={2}
                 strokeDasharray="5 4"
                 dot={false}

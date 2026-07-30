@@ -203,4 +203,8 @@ export type WorkerOption = {
   occupation?: string;
   payType?: string;
   city?: string;
+  /** Precomputed on the server so the demo switcher can preview each outcome. */
+  status?: ForecastStatus;
+  safeDays?: number;
+  survivesWindow?: boolean;
 };
